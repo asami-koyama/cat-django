@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '1dhj!k#y&1jh+jnu1)^wpxz2%yz=vd#t_rs)%5dr4)(g&1#ix!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['18.221.251.5']
 
@@ -37,9 +38,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'corsheaders',
+
+    'api',
+
+    'djoser',
+    'rest_framework.authtoken',
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'http://18.221.251.5:3000',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,8 +92,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'django_react.wsgi.application'
+DJOSER = {
+    'SET_USERNAME_RETYPE': True,
+    'TOKEN_MODEL': None,
+    'SERIALIZERS': {},
+}
 
+AUTH_USER_MODEL = 'api.User'
+
+WSGI_APPLICATION = 'django_react.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -81,6 +113,9 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'db',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        }
     }
 }
 
@@ -106,9 +141,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
