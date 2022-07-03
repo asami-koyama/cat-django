@@ -2,10 +2,8 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import Blackcat from '../images/black-cat.png';
 import BlackcatHug from '../images/black-cat-hug.png';
-// import { css, cx } from '@emotion/css'
 
-class WelcomePage extends React.Component{s
-
+class WelcomePage extends React.Component{
     lets_go_cats(){
         <Link to={`/cats`}>ホームに戻る</Link>
     }
@@ -14,13 +12,11 @@ class WelcomePage extends React.Component{s
         return(
             <div className='height-max'>
                 <Link to={`/cats`}>
-                    <div className='bg-yellow left-welcompage-buttun-box' onClick={()=>{this.lets_go_cats()}}>
-                        <img src={BlackcatHug}  alt="image" className='black-cat'/>
+                    <div className='bg-yellow left-welcompage-buttun-box min-height-fulldisplay' onClick={()=>{this.lets_go_cats()}}>
                     </div>
                 </Link>
-                <Link to={`/cats`}>
-                    <div className='bg-blue right-welcompage-buttun-box' onClick={()=>{this.lets_go_cats()}}>
-                        <img src={Blackcat} alt='image' className='black-cat'></img>
+                <Link to={`/test`}>
+                    <div className='bg-blue right-welcompage-buttun-box min-height-fulldisplay' onClick={()=>{this.lets_go_cats()}}>
                     </div>
                 </Link>
             </div>

@@ -10,8 +10,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {ThemeProvider } from '@mui/material/styles';
-import { Sign } from './theme';
-import AuthService from  './AuthService';
+import { Sign } from '../function/theme';
+import AuthService from  '../function/AuthService';
 import { useNavigate } from "react-router-dom";
 
 
@@ -44,11 +44,10 @@ export default function Login() {
       email: data.get('email'),
       password: data.get('password'),
     });
+
   };
 
-  console.log(isError)
   if(isError){
-    console.log(isError)
     ErrorText = (<Typography variant="body2" sx={{color:'#FF0000'}}>
     メールアドレスまたはパスワードが間違っています
     </Typography>);

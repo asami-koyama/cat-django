@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -7,6 +6,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth.base_user import BaseUserManager
 
+# デフォルトのUserModelを変更
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -63,6 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         },
     )
     email = models.EmailField(_('email address'), blank=True,unique=True)
+    # user_type( 里親 = 'Adopter' / サポーター = 'Supporter')
     user_type = models.CharField(_('usertype'), max_length=255, choices=USER_TYPE)
     is_staff = models.BooleanField(
         _('staff status'),
@@ -82,6 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    # email + password でログインに変更
     EMAIL_FIELD = 'email' # fix
     USERNAME_FIELD = 'email' # fix
     REQUIRED_FIELDS = ['username','user_type'] # fix
@@ -115,16 +117,6 @@ STATUS_CAT = [
    ('申請中', '申請中'),
    ('お家決定','お家決定')
 ]
-LOCATION_CAT = [
-    ('北海道', '北海道'),
-    ('東北','東北'),
-    ('関東','関東'),
-    ('北陸・東海','北陸・東海'),
-    ('近畿','近畿'),
-    ('中国','中国'),
-    ('四国','四国'),
-    ('九州','九州')
-]
 
 GENDER = [
     ('オス','オス'),
@@ -134,18 +126,41 @@ GENDER = [
 class Cat(models.Model):
     name = models.CharField(max_length=64, blank=False)
     status = models.CharField(max_length=128, choices=STATUS_CAT, blank=False)
-    location = models.CharField(max_length=32, choices=LOCATION_CAT, blank=False)
+    location = models.CharField(max_length=128, blank=False)
     protected_date = models.DateField()
-    age = models.IntegerField()
+    age_year = models.IntegerField(blank=True, null=True)
+    age_month = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=8, choices=GENDER)
     pattern = models.CharField(max_length=128)
     color = models.CharField(max_length=64)
     note = models.CharField(max_length=1024)
-    img = models.CharField(max_length=1024)
+    img = models.ImageField(upload_to='post_images', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
 
     def __str__(self):
         return self.name
 
+'''
+class Offer(models.Model):
+    cat = models.ForeignKey(Cat, on_delete=models.CASCADE, related_name="cat")
+    adopter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="adopter")
+    supporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="supporter")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.cat
+
+class Chat(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    messeage = models.CharField(max_length=2048)
+    is_readed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.messeage
+'''
