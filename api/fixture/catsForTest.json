@@ -1,0 +1,56 @@
+[
+    {
+      "model": "api.cat",
+      "pk": 1,
+      "fields": {
+          "name": "おもち",
+          "status": "募集中",
+          "location": "北海道",
+          "protected_date": "2022-6-13",
+          "age": "0.1",
+          "gender": "オス",
+          "pattern": "三毛",
+          "color": "白/黒/オレンジ",
+          "note": "家で保護していた猫が赤ちゃんを産みました。引き取ってくださる方を探しています。",
+
+          "created_at": "2022-06-15T13:19:37+09:00",
+          "updated_at": "2022-06-15T13:19:37+09:00"      
+      }
+    },
+    {
+        "model": "api.cat",
+        "pk": 2,
+        "fields": {
+            "name": "チェルシー",
+            "status": "募集中",
+            "location": "関東",
+            "protected_date": "2022-6-14",
+            "age": "1",
+            "gender": "オス",
+            "pattern": "ハチワレ",
+            "color": "白/黒",
+            "note": "近所で怪我をしていたところ保護しました。ワクチンは2回目まで済んでいます",
+
+            "created_at": "2022-06-15T13:19:37+09:00",
+            "updated_at": "2022-06-15T13:19:37+09:00"      
+      }
+    },
+    {
+        "model": "api.cat",
+        "pk": 3,
+        "fields": {
+            "name": "むつ",
+            "status": "募集中",
+            "location": "九州",
+            "protected_date": "2022-6-14",
+            "age": "5",
+            "gender": "メス",
+            "pattern": "無地",
+            "color": "白",
+            "note": "保護猫です。ワクチン・避妊手術は済んでいます。",
+
+            "created_at": "2022-06-15T13:19:37+09:00",
+            "updated_at": "2022-06-15T13:19:37+09:00"      
+      }
+    }
+  ]

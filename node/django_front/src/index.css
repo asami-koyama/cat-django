@@ -1,4 +1,9 @@
 /* 共通部分 */
+html,body{
+  width: 100%;
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
@@ -25,7 +30,7 @@ code {
 /* welcome-page css */
 /********************/
 div.height-max{
-  height: 100vh;
+  height: 100%;
 }
 
 div.left-welcompage-buttun-box{
@@ -33,31 +38,12 @@ div.left-welcompage-buttun-box{
   justify-content: right;
   float : left;
   width: 50%;
-  min-height: 100vh;
   margin: 0 auto;
-}
-
-img .black-cat-hug{
-  max-width: none;
-  display: block;
-  background-size: cover;
 }
 
 div.right-welcompage-buttun-box{
   float : right;
   width: 50%;
-  min-height: 100vh;
-  margin: 0 auto;
-}
-
-img .black-cat{
-  width: 100%;
-  height: auto;
-  background-size: cover;
-}
-
-right-welcompage-buttun-box{
-  float : right;
-  width: 50%;
+  
   margin: 0 auto;
 }
