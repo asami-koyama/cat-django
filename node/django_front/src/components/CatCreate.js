@@ -117,7 +117,7 @@ const CatCreate = () => {
             let extension = name.substr(name.indexOf('.') , name.length+1);
             let fileName =  now + extension;
             console.log("aaa")
-            form_data.append('img', values.image.value, fileName);
+            form_data.append('img', fileName);
         }
 
         form_data.append('status',"募集中");

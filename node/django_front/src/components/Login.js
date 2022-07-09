@@ -13,16 +13,20 @@ import {ThemeProvider } from '@mui/material/styles';
 import { Sign } from '../function/theme';
 import AuthService from  '../function/AuthService';
 import { useNavigate } from "react-router-dom";
+import { isLoginState } from "../function/Atom";
+import { useRecoilState } from "recoil";
 
 
 export default function Login() { 
+  const [ isLogin, setisLogin ] = useRecoilState(isLoginState);
 
   const [isError, setError] = useState(false);
   let ErrorText = "";
 
   const navigate = useNavigate();
-  function success(){
+  function success(token){
     navigate(`/Cats`);
+    setisLogin(true)
   }
 
   const handleSubmit = (event) => {
@@ -32,8 +36,8 @@ export default function Login() {
         data.get('email'),
         data.get('password'),
     ).then(
-      ()=>{
-        success()
+      (token)=>{
+        success(token)
       },
       error => {
         setError(true);

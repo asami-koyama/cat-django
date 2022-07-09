@@ -10,10 +10,6 @@ import Grid from '@mui/material/Grid';
 import {ThemeProvider } from '@mui/material/styles';
 import { Detail } from '../function/theme'
 
-
-const IMG_URL = "/image/cat_image/"
-
-
 function CatDetail(){
     
     let { id } = useParams();

@@ -15,9 +15,18 @@ import { Link } from 'react-router-dom';
 import {useWindowSize} from 'react-use';
 import setGlobalStyle from '../function/GlobalStyle';
 import { css } from '@emotion/react';
-import AuthService from '../function/AuthService'
+import UserStatus from '../function/UserStatus'
+import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
+import { userDataState } from "../function/Atom";
+import { isLoginState } from "../function/Atom";
 
 const ResponsiveAppBar = () => {
+  const status = useRecoilValue(userDataState)
+  const isLogin = useRecoilValue(isLoginState)
+
+  const [pages, setPages] = useState([]);
+  const [settings, setSettings] = useState([]);
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -59,59 +68,49 @@ const ResponsiveAppBar = () => {
       `;
       setGlobalDOM(setGlobalStyle(globalStyle));
     }
-    console.log("画面サイズ")
   }, [width, height]);
 
-  const [pages, setPages] = useState([]);
-  const [settings, setSettings] =useState([]);
-
+  console.log(status.user_type)
+  console.log(isLogin)
+  console.log('header')
   useEffect(() => {
-    AuthService.getCurrentUser().then(result =>{
-      console.log(result)
+    console.log('hasihasi')
+    if (status.user_type == ""){
+      setPages([
+        {label: '新規登録', link:'/' }
+      ])
 
-      if (result === 0){
-        console.log(0)
-        setPages([
-          {label: '新規登録', link:'/' },
-        ])
+      setSettings([
+        {label: 'ログイン', link:'/login'}
+      ]
+      )
+      console.log(pages)
 
-        setSettings([
-          {label: 'ログイン', link:'/login'},
-        ])
+    }else if(status.user_type == "Supporter"){
+      setPages([
+        {label: '猫一覧', link:'/cats' },
+        {label: '猫登録', link:'/CatCreate' },
+        {label: '登録猫一覧', link:'/' }
+      ])
 
-      }else if(result.user_type === "Adopter"){
-        console.log('Adopter')
-        setPages([
-          {label: '猫一覧', link:'/cats' },
-          {label: '猫登録', link:'/CatCreate' },
-          {label: '登録猫一覧', link:'/' }
-        ])
+      setSettings([
+        {label: 'ログアウト', link:'/logout'},
+        {label: 'メッセージ', link:'/'}
+      ])
+      console.log(pages)
+    }else if(status.user_type == "Adopter"){
+      setPages([
+        {label: '猫一覧', link:'/cats' },
+        {label: '申請中一覧', link:'/' }
+      ])
 
-        setSettings([
-          {label: 'ログアウト', link:'/logout'},
-          {label: 'メッセージ', link:'/'},
-        ])
-
-      }else if(result.user_type === "Supporter"){
-        console.log('Supporter')
-        setPages([
-          {label: '猫一覧', link:'/cats' },
-          {label: '申請中一覧', link:'/' }
-        ])
-
-        setSettings([
-          {label: 'ログアウト', link:'/logout'},
-          {label: 'メッセージ', link:'/'},
-        ])
-      }
-
-
-    });
-  },[localStorage.getItem("user")])
-  
-
-
-
+      setSettings([
+        {label: 'ログアウト', link:'/logout'},
+        {label: 'メッセージ', link:'/'}
+      ])
+      console.log(pages)
+    }
+  },[status.user_type])
 
   return (
     <div ref={elm}>
