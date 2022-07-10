@@ -1,4 +1,12 @@
 /* 共通部分 */
+@font-face {
+  font-family: 'NotoSansJP';
+    src: url('./fonts/NotoSansJP-Light.otf') format('opentype');
+
+  font-family: 'ZenKurenaido';
+    src: url('./fonts/ZenKurenaido-Regular.ttf') format('truetype')   
+}
+
 html,body{
   width: 100%;
   height: 100%;
@@ -6,8 +14,8 @@ html,body{
 
 body {
   margin: 0;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'NotoSansJP', 'Segoe UI',
+    'Oxygen','Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

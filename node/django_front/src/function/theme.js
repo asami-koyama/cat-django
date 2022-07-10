@@ -33,7 +33,7 @@ export const Detail = createTheme({
       contrastText: '#efe5cf'
     },
     secondary: {
-      main: '#444444',
+      main: '#666666',
       contrastText: '#c88f55',
     },
   },
