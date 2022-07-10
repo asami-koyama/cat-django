@@ -9,21 +9,19 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import PetsIcon from '@mui/icons-material/Pets';
-import { Header } from '../function/theme'
+import { Header } from '../function/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import {useWindowSize} from 'react-use';
+import { useWindowSize } from 'react-use';
 import setGlobalStyle from '../function/GlobalStyle';
 import { css } from '@emotion/react';
-import UserStatus from '../function/UserStatus'
-import { useRecoilState } from "recoil";
-import { useRecoilValue } from "recoil";
-import { userDataState } from "../function/Atom";
-import { isLoginState } from "../function/Atom";
+import { useRecoilValue } from 'recoil';
+import { userDataState } from '../function/Atom';
+import { isLoginState } from '../function/Atom';
 
 const ResponsiveAppBar = () => {
-  const status = useRecoilValue(userDataState)
-  const isLogin = useRecoilValue(isLoginState)
+  const status = useRecoilValue(userDataState);
+  const isLogin = useRecoilValue(isLoginState);
 
   const [pages, setPages] = useState([]);
   const [settings, setSettings] = useState([]);
@@ -45,79 +43,66 @@ const ResponsiveAppBar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-  }; 
+  };
 
   // get header's height
   const elm = useRef(null);
   const { width, height } = useWindowSize();
 
-  const [globalDOM, setGlobalDOM] =  useState();
+  const [globalDOM, setGlobalDOM] = useState();
 
   useEffect(() => {
-    if (elm.current){
+    if (elm.current) {
       const headerHeight = elm?.current.clientHeight;
       const noHeaderHeight = height - headerHeight;
       const globalStyle = css`
-        body{
-            min-height: ${noHeaderHeight}px;
+        body {
+          min-height: ${noHeaderHeight}px;
         }
 
-        .min-height-fulldisplay{
-            min-height: ${noHeaderHeight}px;
+        .min-height-fulldisplay {
+          min-height: ${noHeaderHeight}px;
         }
       `;
       setGlobalDOM(setGlobalStyle(globalStyle));
     }
   }, [width, height]);
 
-  console.log(status.user_type)
-  console.log(isLogin)
-  console.log('header')
   useEffect(() => {
-    console.log('hasihasi')
-    if (status.user_type == ""){
+    if (status.user_type == '') {
+      setPages([{ label: '新規登録', link: '/' }]);
+
+      setSettings([{ label: 'ログイン', link: '/login' }]);
+    } else if (status.user_type == 'Supporter') {
       setPages([
-        {label: '新規登録', link:'/' }
-      ])
+        { label: '猫一覧', link: '/cats' },
+        { label: '猫登録', link: '/CatCreate' },
+        { label: '登録猫一覧', link: '/' },
+      ]);
 
       setSettings([
-        {label: 'ログイン', link:'/login'}
-      ]
-      )
-      console.log(pages)
-
-    }else if(status.user_type == "Supporter"){
+        { label: 'ログアウト', link: '/logout' },
+        { label: 'メッセージ', link: '/' },
+      ]);
+    } else if (status.user_type == 'Adopter') {
       setPages([
-        {label: '猫一覧', link:'/cats' },
-        {label: '猫登録', link:'/CatCreate' },
-        {label: '登録猫一覧', link:'/' }
-      ])
+        { label: '猫一覧', link: '/cats' },
+        { label: '申請中一覧', link: '/' },
+      ]);
 
       setSettings([
-        {label: 'ログアウト', link:'/logout'},
-        {label: 'メッセージ', link:'/'}
-      ])
-      console.log(pages)
-    }else if(status.user_type == "Adopter"){
-      setPages([
-        {label: '猫一覧', link:'/cats' },
-        {label: '申請中一覧', link:'/' }
-      ])
-
-      setSettings([
-        {label: 'ログアウト', link:'/logout'},
-        {label: 'メッセージ', link:'/'}
-      ])
-      console.log(pages)
+        { label: 'ログアウト', link: '/logout' },
+        { label: 'メッセージ', link: '/' },
+      ]);
     }
-  },[status.user_type])
+  }, [status.user_type]);
 
   return (
     <div ref={elm}>
       {globalDOM}
       <ThemeProvider theme={Header}>
         <AppBar position="static">
-          <Toolbar disableGutters sx={{mx: 3}}>
+          <Toolbar disableGutters sx={{ mx: 3 }}>
             <PetsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             <Typography
               variant="h6"
@@ -128,13 +113,14 @@ const ResponsiveAppBar = () => {
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
+                fontFamily: 'Roboto',
+                fontWeight: 'bold',
+                fontSize: '24px',
                 letterSpacing: '.3rem',
                 textDecoration: 'none',
               }}
             >
-              LOGO
+              CatWith
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -167,13 +153,16 @@ const ResponsiveAppBar = () => {
                 }}
               >
                 {pages.map((page) => (
-                  <MenuItem 
+                  <MenuItem
                     key={page.label}
                     label={page.label}
                     component={Link}
                     to={page.link}
-                    onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page.label}</Typography>
+                    onClick={handleCloseNavMenu}
+                  >
+                    <Typography textAlign="center" sx={{ fontWeight: 'bold' }}>
+                      {page.label}
+                    </Typography>
                   </MenuItem>
                 ))}
               </Menu>
@@ -189,13 +178,14 @@ const ResponsiveAppBar = () => {
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
                 flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',          
+                fontFamily: 'Roboto',
+                fontSize: '24px',
+                fontWeight: 'bold',
+                letterSpacing: '.3rem',
                 textDecoration: 'none',
               }}
             >
-              LOGO
+              CatWith
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
@@ -205,19 +195,20 @@ const ResponsiveAppBar = () => {
                   component={Link}
                   to={page.link}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, display: 'block' }}
+                  sx={{ my: 2, display: 'block', fontWeight: 'bold' }}
                   color="secondary"
                 >
                   {page.label}
                 </Button>
               ))}
             </Box>
-            <Box sx={{ flexGrow: 0 ,}}>
-              <Button 
-              onClick={handleOpenUserMenu} 
-              color="secondary"
-              sx={{fontFamily: 'monospace',fontWeight: 700 }}>
-                    USER
+            <Box sx={{ flexGrow: 0 }}>
+              <Button
+                onClick={handleOpenUserMenu}
+                color="secondary"
+                sx={{ fontFamily: 'Roboto', fontWeight: 700 }}
+              >
+                USER
               </Button>
               <Menu
                 sx={{ mt: '45px' }}
@@ -236,12 +227,13 @@ const ResponsiveAppBar = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem 
+                  <MenuItem
                     key={setting.label}
                     label={setting.label}
                     component={Link}
                     to={setting.link}
-                    onClick={handleCloseUserMenu}>
+                    onClick={handleCloseUserMenu}
+                  >
                     <Typography textAlign="center">{setting.label}</Typography>
                   </MenuItem>
                 ))}
@@ -252,6 +244,5 @@ const ResponsiveAppBar = () => {
       </ThemeProvider>
     </div>
   );
-
 };
 export default ResponsiveAppBar;
