@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,20 +12,24 @@ import MenuItem from '@mui/material/MenuItem';
 import PetsIcon from '@mui/icons-material/Pets';
 import { Header } from '../function/theme';
 import { ThemeProvider } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
 import setGlobalStyle from '../function/GlobalStyle';
 import { css } from '@emotion/react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { unreadMessageState } from '../function/Atom';
 import { userDataState } from '../function/Atom';
-import { isLoginState } from '../function/Atom';
+import MailIcon from '@mui/icons-material/Mail';
+import Badge from '@mui/material/Badge';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import axios from 'axios';
 
 const ResponsiveAppBar = () => {
   const status = useRecoilValue(userDataState);
-  const isLogin = useRecoilValue(isLoginState);
+  const [unread, setUnread] = useRecoilState(unreadMessageState);
 
   const [pages, setPages] = useState([]);
   const [settings, setSettings] = useState([]);
+  const [message, setMessage] = useState('');
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -45,7 +50,7 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  // get header's height
+  // ヘッダー分の高さを取得してGlobalCSSを生成
   const elm = useRef(null);
   const { width, height } = useWindowSize();
 
@@ -63,47 +68,94 @@ const ResponsiveAppBar = () => {
         .min-height-fulldisplay {
           min-height: ${noHeaderHeight}px;
         }
+
+        .min-height-fulldisplay-minus1 {
+          min-height: calc(${noHeaderHeight}px - 1vh);
+        }
       `;
       setGlobalDOM(setGlobalStyle(globalStyle));
     }
   }, [width, height]);
 
+  // ヘッダーの項目を決定
   useEffect(() => {
     if (status.user_type == '') {
-      setPages([{ label: '新規登録', link: '/' }]);
+      setPages([{ label: '', link: '/' }]);
 
       setSettings([{ label: 'ログイン', link: '/login' }]);
-    } else if (status.user_type == 'Supporter') {
-      setPages([
-        { label: '猫一覧', link: '/cats' },
-        { label: '猫登録', link: '/CatCreate' },
-        { label: '登録猫一覧', link: '/' },
-      ]);
+    } else {
+      const user_type = status.user_type == 'Adopter' ? 'adopter' : 'supporter';
+      axios
+        .get(
+          'http://192.168.150.201:8000/api/chats/?' +
+            user_type +
+            '=' +
+            status.id +
+            '&sender=' +
+            status.id
+        )
+        .then((res) => {
+          console.log(res.data.length);
+          setUnread(res.data.length);
+          setMessage(
+            <Link to="/chatTable">
+              <IconButton size="large" color="secondary">
+                <Badge badgeContent={res.data.length} color="error">
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+            </Link>
+          );
+        });
 
-      setSettings([
-        { label: 'ログアウト', link: '/logout' },
-        { label: 'メッセージ', link: '/' },
-      ]);
-    } else if (status.user_type == 'Adopter') {
-      setPages([
-        { label: '猫一覧', link: '/cats' },
-        { label: '申請中一覧', link: '/' },
-      ]);
-
-      setSettings([
-        { label: 'ログアウト', link: '/logout' },
-        { label: 'メッセージ', link: '/' },
-      ]);
+      setSettings([{ label: 'ログアウト', link: '/logout' }]);
+      if (status.user_type == 'Supporter') {
+        setPages([
+          { label: '猫一覧', link: '/cats' },
+          { label: '猫登録', link: '/CatCreate' },
+          { label: '登録猫一覧', link: '/catsTableRegistered' },
+          { label: '申請一覧', link: '/OfferTable' },
+        ]);
+      } else if (status.user_type == 'Adopter') {
+        setPages([
+          { label: '猫一覧', link: '/cats' },
+          { label: '申請中一覧', link: '/offerCats' },
+        ]);
+      }
     }
   }, [status.user_type]);
+
+  // ロケーション毎にheaderのcssを変更
+  const location = useLocation();
+  let headerClearStyle;
+  let headerTextColor;
+
+  if (location.pathname == '/') {
+    headerClearStyle = css`
+      background-color: transparent;
+      position: fixed;
+      z-index: 50000;
+      box-shadow: none;
+    `;
+
+    headerTextColor = css`
+      color: rgb(141, 134, 110);
+    `;
+  } else {
+    headerClearStyle = css``;
+    headerTextColor = ``;
+  }
 
   return (
     <div ref={elm}>
       {globalDOM}
       <ThemeProvider theme={Header}>
-        <AppBar position="static">
+        <AppBar position="static" css={headerClearStyle}>
           <Toolbar disableGutters sx={{ mx: 3 }}>
-            <PetsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <PetsIcon
+              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+              css={headerTextColor}
+            />
             <Typography
               variant="h6"
               noWrap
@@ -122,8 +174,12 @@ const ResponsiveAppBar = () => {
             >
               CatWith
             </Typography>
-
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: 'flex', md: 'none' },
+              }}
+            >
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -134,6 +190,7 @@ const ResponsiveAppBar = () => {
               >
                 <MenuIcon />
               </IconButton>
+
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorElNav}
@@ -160,14 +217,15 @@ const ResponsiveAppBar = () => {
                     to={page.link}
                     onClick={handleCloseNavMenu}
                   >
-                    <Typography textAlign="center" sx={{ fontWeight: 'bold' }}>
-                      {page.label}
-                    </Typography>
+                    <Typography textAlign="center">{page.label}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
             </Box>
-            <PetsIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+            <PetsIcon
+              sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
+              css={headerTextColor}
+            />
             <Typography
               variant="h5"
               noWrap
@@ -187,7 +245,12 @@ const ResponsiveAppBar = () => {
             >
               CatWith
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: 'none', md: 'flex' },
+              }}
+            >
               {pages.map((page) => (
                 <Button
                   key={page.label}
@@ -195,7 +258,11 @@ const ResponsiveAppBar = () => {
                   component={Link}
                   to={page.link}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, display: 'block', fontWeight: 'bold' }}
+                  sx={{
+                    my: 2,
+                    display: 'block',
+                    fontWeight: 'bold',
+                  }}
                   color="secondary"
                 >
                   {page.label}
@@ -203,13 +270,17 @@ const ResponsiveAppBar = () => {
               ))}
             </Box>
             <Box sx={{ flexGrow: 0 }}>
-              <Button
+              {message}
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-haspopup="true"
                 onClick={handleOpenUserMenu}
                 color="secondary"
-                sx={{ fontFamily: 'Roboto', fontWeight: 700 }}
               >
-                USER
-              </Button>
+                <AccountCircle />
+              </IconButton>
               <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
