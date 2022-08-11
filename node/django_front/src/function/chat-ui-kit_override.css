@@ -1,0 +1,21 @@
+.cs-message-input__content-editor-wrapper {
+  background-color: #efe5cf;
+}
+
+.cs-message-input__content-editor {
+  background-color: #efe5cf;
+}
+
+.cs-button--send {
+  color: #c88f55;
+}
+
+.cs-message--incoming .cs-message__content {
+  background-color: #f3f3f3;
+  border-radius: 0 0.7em 0.7em 0.7em;
+}
+
+.cs-message--outgoing .cs-message__content {
+  background-color: #edb2a0;
+  border-radius: 0.7em 0 0.7em 0.7em;
+}

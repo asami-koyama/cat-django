@@ -15,34 +15,37 @@ class UserManager(BaseUserManager):
         Create and save a user with the given username, email, and password.
         """
         if not username:
-            raise ValueError('The given username must be set')
+            raise ValueError("The given username must be set")
         email = self.normalize_email(email)
         username = self.model.normalize_username(username)
-        user = self.model(username=username, email=email, user_type=user_type, **extra_fields)
+        user = self.model(
+            username=username, email=email, user_type=user_type, **extra_fields
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, username, email=None, password=None, user_type=None,**extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
+    def create_user(
+        self, username, email=None, password=None, user_type=None, **extra_fields
+    ):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         return self._create_user(username, email, password, user_type, **extra_fields)
 
     def create_superuser(self, username, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(username, email, password, **extra_fields)
 
-USER_TYPE = [
-   ('Adopter', 'Adopter'),
-   ('Supporter', 'Supporter')
-]
+
+USER_TYPE = [("Adopter", "Adopter"), ("Supporter", "Supporter")]
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
@@ -50,47 +53,49 @@ class User(AbstractBaseUser, PermissionsMixin):
     admin-compliant permissions.
     Username and password are required. Other fields are optional.
     """
+
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
-        _('username'),
+        _("username"),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_(
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        ),
         validators=[username_validator],
         error_messages={
-            'unique': _("そのユーザ名は既に使われています！"),
+            "unique": _("そのユーザ名は既に使われています！"),
         },
     )
-    email = models.EmailField(_('email address'), blank=True,unique=True)
+    email = models.EmailField(_("email address"), blank=True, unique=True)
     # user_type( 里親 = 'Adopter' / サポーター = 'Supporter')
-    user_type = models.CharField(_('usertype'), max_length=255, choices=USER_TYPE)
+    user_type = models.CharField(_("usertype"), max_length=255, choices=USER_TYPE)
     is_staff = models.BooleanField(
-        _('staff status'),
+        _("staff status"),
         default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
+        help_text=_("Designates whether the user can log into this admin site."),
     )
     is_active = models.BooleanField(
-        _('active'),
+        _("active"),
         default=True,
         help_text=_(
-            'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
         ),
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-
+    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
     objects = UserManager()
 
     # email + password でログインに変更
-    EMAIL_FIELD = 'email' # fix
-    USERNAME_FIELD = 'email' # fix
-    REQUIRED_FIELDS = ['username','user_type'] # fix
+    EMAIL_FIELD = "email"  # fix
+    USERNAME_FIELD = "email"  # fix
+    REQUIRED_FIELDS = ["username", "user_type"]  # fix
 
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
 
     def clean(self):
         super().clean()
@@ -100,7 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Return the first_name plus the last_name, with a space in between.
         """
-        full_name = '%s %s' % (self.first_name, self.last_name)
+        full_name = "%s %s" % (self.first_name, self.last_name)
         return full_name.strip()
 
     def get_short_name(self):
@@ -112,16 +117,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-STATUS_CAT = [
-   ('募集中', '募集中'),
-   ('申請中', '申請中'),
-   ('お家決定','お家決定')
-]
+STATUS_CAT = [("募集中", "募集中"), ("お家決定", "お家決定")]
 
-GENDER = [
-    ('オス','オス'),
-    ('メス','メス')
-]
+GENDER = [("オス", "オス"), ("メス", "メス")]
+
 
 class Cat(models.Model):
     name = models.CharField(max_length=64, blank=False)
@@ -131,10 +130,10 @@ class Cat(models.Model):
     age_year = models.IntegerField(blank=True, null=True)
     age_month = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=8, choices=GENDER)
-    pattern = models.CharField(max_length=128)
-    color = models.CharField(max_length=64)
-    note = models.CharField(max_length=1024)
-    img = models.ImageField(upload_to='post_images', blank=True, null=True)
+    pattern = models.CharField(max_length=128, blank=True, null=True)
+    color = models.CharField(max_length=64, blank=True, null=True)
+    note = models.CharField(max_length=1024, blank=True, null=True)
+    img = models.ImageField(upload_to="post_images", blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -142,25 +141,42 @@ class Cat(models.Model):
     def __str__(self):
         return self.name
 
-'''
+
 class Offer(models.Model):
-    cat = models.ForeignKey(Cat, on_delete=models.CASCADE, related_name="cat")
-    adopter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="adopter")
-    supporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="supporter")
+    cat = models.ForeignKey(Cat, on_delete=models.CASCADE)
+    adopter = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="offer_adopter"
+    )
+    supporter = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="offer_supporter"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.cat
 
+
 class Chat(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender")
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    adopter = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="chat_adopter"
+    )
+    supporter = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="chat_supporter"
+    )
+    sender = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sender")
     messeage = models.CharField(max_length=2048)
     is_readed = models.BooleanField(default=False)
+    cat = models.ForeignKey(
+        "Cat",
+        on_delete=models.CASCADE,
+        related_name="chat_cat",
+        default=None,
+        blank=True,
+        null=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.messeage
-'''

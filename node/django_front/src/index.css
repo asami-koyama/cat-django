@@ -1,22 +1,25 @@
 /* 共通部分 */
 @font-face {
   font-family: 'NotoSansJP';
-    src: url('./fonts/NotoSansJP-Light.otf') format('opentype');
-
-  font-family: 'ZenKurenaido';
-    src: url('./fonts/ZenKurenaido-Regular.ttf') format('truetype')   
+  src: url('./fonts/NotoSansJP-Light.otf') format('opentype');
 }
 
-html,body{
+@font-face {
+  font-family: 'ZenKurenaido';
+  src: url('./fonts/ZenKurenaido-Regular.ttf') format('truetype');
+}
+
+html,
+body {
   width: 100%;
   height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'NotoSansJP', 'Segoe UI',
-    'Oxygen','Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'NotoSansJP',
+    'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -31,27 +34,27 @@ code {
 }
 
 .bg-blue {
-  background-color: #B0E0E6;
+  background-color: #b0e0e6;
 }
 
 /********************/
 /* welcome-page css */
 /********************/
-div.height-max{
+div.height-max {
   height: 100%;
 }
 
-div.left-welcompage-buttun-box{
+div.left-welcompage-buttun-box {
   display: flex;
   justify-content: right;
-  float : left;
+  float: left;
   width: 50%;
   margin: 0 auto;
 }
 
-div.right-welcompage-buttun-box{
-  float : right;
+div.right-welcompage-buttun-box {
+  float: right;
   width: 50%;
-  
+
   margin: 0 auto;
 }

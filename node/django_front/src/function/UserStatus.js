@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { userDataState } from './Atom';
 import { isLoginState } from './Atom';
-import { useRecoilState } from 'recoil';
 import { useSetRecoilState } from 'recoil';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 const UserStatus = () => {
@@ -32,7 +31,12 @@ const UserStatus = () => {
           if (err.response.status === 401) {
             localStorage.removeItem('user');
             setisLogin(false);
-            setUserData({ username: '', user_type: '', id: null, email: '' });
+            setUserData({
+              username: '',
+              user_type: '',
+              id: null,
+              email: '',
+            });
           }
         });
     } else {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { Header } from './theme'
+import { Header } from './theme';
 import { ThemeProvider } from '@mui/material/styles';
 
 export default function Footer() {
@@ -13,7 +13,7 @@ export default function Footer() {
           backgroundColor: 'primary.main',
           bottom: 0,
           position: 'flex',
-          mt:4
+          mt: 4,
         }}
       />
     </ThemeProvider>

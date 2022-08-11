@@ -1,13 +1,10 @@
 import * as React from 'react';
-import CatTable from './CatTable'
+import CatTable from './CatTable';
 
 class CatTablePage extends React.Component {
-    
-    render() {
-      return (
-        <CatTable />
-      );
-    }
+  render() {
+    return <CatTable />;
   }
-  
-  export default CatTablePage;
+}
+
+export default CatTablePage;
